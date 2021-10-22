@@ -30,7 +30,7 @@ dependencies {
 }
 
 test {
-    useJUnit()
+    junit "test.xml"
 
     maxHeapSize = '1G'
 }
