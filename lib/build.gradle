@@ -29,6 +29,12 @@ dependencies {
     implementation 'com.google.guava:guava:30.1-jre'
 }
 
+test {
+    useJUnit()
+
+    maxHeapSize = '1G'
+}
+
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
