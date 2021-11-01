@@ -11,8 +11,7 @@ import bw1021.model.RentalTool;
 public class Main {
 
 	public static void main(String[] args) throws InvalidDiscountException, InvalidRentalDaysException {
-		RentalTool tool = new RentalTool.Builder(ToolEnum.JAKR).build();
-		RentalAgreement rentalAgreement = new RentalAgreement.Builder(tool)
+		RentalAgreement rentalAgreement = new RentalAgreement.Builder(ToolEnum.JAKR)
 				.checkoutDate(LocalDate.of(2020, 7, 2))
 				.rentalDays(4)
 				.discountPercent(50)

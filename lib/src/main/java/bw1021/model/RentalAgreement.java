@@ -5,20 +5,23 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import bw1021.enums.HolidayEnum;
+import bw1021.enums.ToolEnum;
 import bw1021.exceptions.InvalidDiscountException;
 import bw1021.exceptions.InvalidRentalDaysException;
 
 public class RentalAgreement extends Agreement {
 
+	private LocalDateTime checkoutCompleteDate;
 	private int rentalDays;
 	private int chargeDays;
 	private LocalDate checkoutDate;
 	private LocalDate dueDate;
 	private BigDecimal preDiscountCharge;
-	private BigDecimal discountPercent;
+	private BigDecimal discountPercent = new BigDecimal(0);
 	private BigDecimal discountAmount;
 	private BigDecimal finalCharge;
 
@@ -73,6 +76,14 @@ public class RentalAgreement extends Agreement {
 	public BigDecimal getFinalCharge() {
 		return finalCharge;
 	}
+	
+	public LocalDateTime getCheckoutCompleteDate() {
+		return checkoutCompleteDate;
+	}
+
+	public void setCheckoutCompleteDate(LocalDateTime checkoutCompleteDate) {
+		this.checkoutCompleteDate = checkoutCompleteDate;
+	}
 
 	@Override
 	public String toString() {
@@ -106,6 +117,10 @@ public class RentalAgreement extends Agreement {
 
 		public Builder(RentalTool tool) {
 			this.tool = tool;
+		}
+		
+		public Builder(ToolEnum tool) {
+			this.tool = new RentalTool.Builder(tool).build();
 		}
 
 		public Builder checkoutDate(LocalDate checkoutDate) {
