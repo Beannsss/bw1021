@@ -1,18 +1,22 @@
 package bw1021.model;
 
-public class RentalTool extends Tool {
+import bw1021.enums.ToolEnum;
 
+public class RentalTool extends Tool {
+	
 	private double dailyCharge;
 	private boolean isWeekdayCharge;
 	private boolean isWeekendCharge;
 	private boolean isHolidayCharge;
 
-	private RentalTool(RentalToolBuilder builder) {
-		this.toolCode = builder.toolCode;
-		this.dailyCharge = builder.dailyCharge;
-		this.isWeekdayCharge = builder.isWeekdayCharge;
-		this.isWeekendCharge = builder.isWeekendCharge;
-		this.isHolidayCharge = builder.isHolidayCharge;
+	private RentalTool(Builder builder) {
+		this.toolCode = builder.getTool().name();
+		this.toolType = builder.getTool().getType().name();
+		this.brand = builder.getTool().getBrand().name();
+		this.dailyCharge = builder.getTool().getType().getDailyCharge();
+		this.isWeekdayCharge = builder.getTool().getType().isWeekDayCharge();
+		this.isWeekendCharge = builder.getTool().getType().isWeekendCharge();
+		this.isHolidayCharge = builder.getTool().getType().isHolidayCharge();
 	}
 
 	@Override
@@ -24,63 +28,24 @@ public class RentalTool extends Tool {
 		return dailyCharge;
 	}
 
-	public void setDailyCharge(double dailyCharge) {
-		this.dailyCharge = dailyCharge;
-	}
-
 	public boolean isWeekdayCharge() {
 		return isWeekdayCharge;
-	}
-
-	public void setWeekdayCharge(boolean isWeekdayCharge) {
-		this.isWeekdayCharge = isWeekdayCharge;
 	}
 
 	public boolean isWeekendCharge() {
 		return isWeekendCharge;
 	}
 
-	public void setWeekendCharge(boolean isWeekendCharge) {
-		this.isWeekendCharge = isWeekendCharge;
-	}
-
 	public boolean isHolidayCharge() {
 		return isHolidayCharge;
 	}
 
-	public void setHolidayCharge(boolean isHolidayCharge) {
-		this.isHolidayCharge = isHolidayCharge;
-	}
+	public static class Builder {
+		
+		private ToolEnum tool;
 
-	public static class RentalToolBuilder {
-		private final String toolCode;
-		private double dailyCharge;
-		private boolean isWeekdayCharge = false;
-		private boolean isWeekendCharge = false;
-		private boolean isHolidayCharge = false;
-
-		public RentalToolBuilder(String toolCode) {
-			this.toolCode = toolCode;
-		}
-
-		public RentalToolBuilder dailyCharge(double dailyCharge) {
-			this.dailyCharge = dailyCharge;
-			return this;
-		}
-
-		public RentalToolBuilder weekDayCharge() {
-			this.isWeekdayCharge = true;
-			return this;
-		}
-
-		public RentalToolBuilder weekendChargee() {
-			this.isWeekendCharge = true;
-			return this;
-		}
-
-		public RentalToolBuilder holidayCharge() {
-			this.isHolidayCharge = true;
-			return this;
+		public Builder(ToolEnum tool) {
+			this.tool = tool;
 		}
 
 		public RentalTool build() {
@@ -90,6 +55,10 @@ public class RentalTool extends Tool {
 
 		private boolean validate() {
 			return true;
+		}
+
+		public ToolEnum getTool() {
+			return tool;
 		}
 
 	}

@@ -1,13 +1,24 @@
 package bw1021.model;
 
+
 public abstract class Tool {
 	
-	protected boolean isRental;
 	protected String toolCode;
+	protected String toolType;
+	protected String brand;
 	
 	protected abstract boolean isRental();
-	
-	protected String getToolCode() {
+
+	public String getToolCode() {
 		return toolCode;
 	}
+	
+	public String getBrand() {
+		return brand;
+	}
+	
+	public String getToolType() {
+		return toolType;
+	}
+	
 }
