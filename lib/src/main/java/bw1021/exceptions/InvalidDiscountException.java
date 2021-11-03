@@ -1,16 +1,14 @@
 package bw1021.exceptions;
 
-import java.math.BigDecimal;
-
 public class InvalidDiscountException extends Exception {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1746510738834168055L;
-	private BigDecimal discountPercent;
+	private int discountPercent;
 	
-	public InvalidDiscountException(BigDecimal discountPercent) {
+	public InvalidDiscountException(int discountPercent) {
 		this.discountPercent = discountPercent;
 		
 	}

@@ -58,7 +58,7 @@ class CheckoutTest {
 		RentalCheckout checkout = RentalCheckout.build(ToolEnum.JAKR, 9, 0, LocalDate.of(2015, 7, 2));
 		RentalAgreement rentalAgreement = checkout.getAgreement();
 
-		assertEquals(17.94, rentalAgreement.getFinalCharge().doubleValue());
+		assertEquals(14.95, rentalAgreement.getFinalCharge().doubleValue());
 	}
 
 	@Test

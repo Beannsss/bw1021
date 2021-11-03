@@ -19,28 +19,24 @@ public class RentalCheckout extends Checkout {
 				.build();
 	}
 
-//	private Checkout(String rentalAgreementKey) {
-//		//mySQL get past agreement/checkout
-//	}
-
 	public static RentalCheckout build(ToolEnum tool, int days, int discountPercentage, LocalDate checkoutDate) throws InvalidDiscountException, InvalidRentalDaysException {
 		return new RentalCheckout(tool, days, discountPercentage, checkoutDate);
 	}
 	
-	public void complete() {
+	@Override
+	public RentalCheckout complete() {
 		getAgreement().setCheckoutCompleteDate(LocalDateTime.now());
-		printAgreement();
 //		store();
+		return this;
 	}
 	
-	public void printAgreement() {
+	@Override
+	public RentalCheckout printAgreement() {
 		System.out.println(getAgreement());
+		return this;
 	}
 
-//	//mySQL 
-//	private void store() {
-//	}
-
+	@Override
 	public RentalAgreement getAgreement() {
 		return (RentalAgreement) agreement;
 	}

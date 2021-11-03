@@ -15,18 +15,18 @@ import bw1021.exceptions.InvalidRentalDaysException;
 
 public class RentalAgreement extends Agreement {
 
-	private LocalDateTime checkoutCompleteDate;
 	private int rentalDays;
 	private int chargeDays;
+	private int discountPercentDisplay;
+	private LocalDateTime checkoutCompleteDate;
 	private LocalDate checkoutDate;
 	private LocalDate dueDate;
 	private BigDecimal preDiscountCharge;
-	private BigDecimal discountPercent = new BigDecimal(0);
+	private int discountPercent = 0;
 	private BigDecimal discountAmount;
 	private BigDecimal finalCharge;
 
 	DecimalFormat currencyFormat = (DecimalFormat) DecimalFormat.getCurrencyInstance();
-	NumberFormat percentFormat = NumberFormat.getPercentInstance();
 	DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yy");
 
 	private RentalAgreement(Builder builder) {
@@ -65,7 +65,7 @@ public class RentalAgreement extends Agreement {
 		return preDiscountCharge;
 	}
 
-	public BigDecimal getDiscountPercent() {
+	public int getDiscountPercent() {
 		return discountPercent;
 	}
 
@@ -76,13 +76,17 @@ public class RentalAgreement extends Agreement {
 	public BigDecimal getFinalCharge() {
 		return finalCharge;
 	}
-	
+
 	public LocalDateTime getCheckoutCompleteDate() {
 		return checkoutCompleteDate;
 	}
 
 	public void setCheckoutCompleteDate(LocalDateTime checkoutCompleteDate) {
 		this.checkoutCompleteDate = checkoutCompleteDate;
+	}
+
+	public int getDiscountPercentDisplay() {
+		return discountPercentDisplay;
 	}
 
 	@Override
@@ -97,7 +101,7 @@ public class RentalAgreement extends Agreement {
 		sb.append("Daily rental charge: " + currencyFormat.format(getTool().getDailyCharge()) + "\n");
 		sb.append("Charge days: " + getChargeDays() + "\n");
 		sb.append("Pre-discount charge: " + currencyFormat.format(getPreDiscountCharge()) + "\n");
-		sb.append("Discount percent: " + percentFormat.format(getDiscountPercent()) + "\n");
+		sb.append("Discount percent: " + getDiscountPercent() + "%\n");
 		sb.append("Discount amount: " + currencyFormat.format(getDiscountAmount()) + "\n");
 		sb.append("Final charge: " + currencyFormat.format(getFinalCharge()) + "\n");
 		return sb.toString();
@@ -108,17 +112,17 @@ public class RentalAgreement extends Agreement {
 		private final RentalTool tool;
 		private int rentalDays;
 		private int chargeDays;
+		private int discountPercent;
 		private LocalDate checkoutDate;
 		private LocalDate dueDate;
 		private BigDecimal preDiscountCharge;
-		private BigDecimal discountPercent;
-		private BigDecimal discountAmount;
+		private BigDecimal discountAmount = new BigDecimal(0);
 		private BigDecimal finalCharge;
 
 		public Builder(RentalTool tool) {
 			this.tool = tool;
 		}
-		
+
 		public Builder(ToolEnum tool) {
 			this.tool = new RentalTool.Builder(tool).build();
 		}
@@ -134,7 +138,7 @@ public class RentalAgreement extends Agreement {
 		}
 
 		public Builder discountPercent(int discountPercent) {
-			this.discountPercent = new BigDecimal(discountPercent / 100.0);
+			this.discountPercent = discountPercent;
 			return this;
 		}
 
@@ -143,6 +147,7 @@ public class RentalAgreement extends Agreement {
 			dueDate = currentDate.plusDays(rentalDays);
 			int dayIncrement = 0;
 			for (int i = 0; i < rentalDays; i++) {
+				currentDate = currentDate.plusDays(1);
 				switch (currentDate.getDayOfWeek()) {
 				case MONDAY:
 					if (!tool.isHolidayCharge() && dayIsHoliday(currentDate.minusDays(1)))
@@ -165,7 +170,6 @@ public class RentalAgreement extends Agreement {
 					break;
 
 				}
-				currentDate = currentDate.plusDays(1);
 			}
 			chargeDays = dayIncrement;
 		}
@@ -180,8 +184,13 @@ public class RentalAgreement extends Agreement {
 
 		private void getCost() {
 			preDiscountCharge = new BigDecimal(tool.getDailyCharge() * chargeDays).setScale(2, RoundingMode.HALF_UP);
-			discountAmount = preDiscountCharge.multiply(discountPercent).setScale(2, RoundingMode.HALF_UP);
+			if (discountPercent != 0)
+				discountAmount = preDiscountCharge.multiply(getPercentBigDecimal(discountPercent)).setScale(2, RoundingMode.HALF_UP);
 			finalCharge = preDiscountCharge.subtract(discountAmount).setScale(2, RoundingMode.HALF_UP);
+		}
+
+		public BigDecimal getPercentBigDecimal(int percent) {
+			return new BigDecimal(percent).divide(new BigDecimal(100));
 		}
 
 		public RentalAgreement build() throws InvalidDiscountException, InvalidRentalDaysException {
@@ -194,7 +203,7 @@ public class RentalAgreement extends Agreement {
 		}
 
 		private void validate() throws InvalidDiscountException, InvalidRentalDaysException {
-			if (discountPercent.doubleValue() < 0 || discountPercent.doubleValue() > 1)
+			if (discountPercent < 0 || discountPercent > 100)
 				throw new InvalidDiscountException(discountPercent);
 			if (rentalDays < 1)
 				throw new InvalidRentalDaysException(rentalDays);
